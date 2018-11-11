@@ -11,22 +11,13 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <android.support.v7.widget.CardView
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
-
-            <android.support.v7.widget.SearchView xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/search_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:padding="@dimen/cardview_compat_inset_shadow"
-                app:iconifiedByDefault="false"
-                app:queryHint="Search for books here!">
-
-            </android.support.v7.widget.SearchView>
-        </android.support.v7.widget.CardView>
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Light" />
 
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_view"

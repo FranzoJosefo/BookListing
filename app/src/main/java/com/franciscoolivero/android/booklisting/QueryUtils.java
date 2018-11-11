@@ -25,6 +25,7 @@ public final class QueryUtils {
 
 
     private static final String LOG_TAG = QueryUtils.class.getName();
+    private static final String FOR_SALE = "FOR_SALE";
 
     /**
      * Create a private constructor because no one should ever create a {@link QueryUtils} object.
@@ -96,12 +97,13 @@ public final class QueryUtils {
             urlConnection.setReadTimeout(10000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
             urlConnection.connect();
-            if(urlConnection.getResponseCode()==200){
+            if (urlConnection.getResponseCode() == 200) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
-                // ACA PODES HANDLEAR CON UN RETRY BANNER SI TE LLEGO UN 400 BAD REQUEST.
+                BookListActivity.badResponse = true;
+                // I'm thinking I could somehow handle a bad response code such as 404 or 500 but not sure how to do it. HELP!
             }
 
         } catch (IOException e) {
@@ -111,7 +113,6 @@ public final class QueryUtils {
                 urlConnection.disconnect();
             }
             if (inputStream != null) {
-                // function must handle java.io.IOException here
                 inputStream.close();
             }
         }
@@ -143,7 +144,7 @@ public final class QueryUtils {
     private static List<Book> extractBooks(String jsonResponse) {
 
         //If the JSON string is empty or null, then return early.
-        if(TextUtils.isEmpty(jsonResponse)){
+        if (TextUtils.isEmpty(jsonResponse)) {
             return null;
         }
 
@@ -153,33 +154,61 @@ public final class QueryUtils {
 //         Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
 //         is formatted, a JSONException exception object will be thrown.
 //         Catch the exception so the app doesn't crash, and print the error message to the logs.
-        try{
+        try {
             JSONObject jsonRootObject = new JSONObject(jsonResponse);
             Log.v("extractBooks", "JsonRootObject created");
             JSONArray jsonArrayItems = jsonRootObject.getJSONArray("items");
             Log.v("extractBooks", "jsonArrayItems created");
-            for(int i = 0; i < jsonArrayItems.length(); i++){
+            for (int i = 0; i < jsonArrayItems.length(); i++) {
                 JSONObject currentItem = jsonArrayItems.getJSONObject(i);
                 JSONObject currentVolumeInfo = currentItem.getJSONObject("volumeInfo");
                 JSONArray currentAuthorArray = currentVolumeInfo.optJSONArray("authors");
+                JSONObject currentImageLinks = currentVolumeInfo.optJSONObject("imageLinks");
+                JSONObject currentSaleInfo = currentItem.getJSONObject("saleInfo");
+
                 String bookTittle = currentVolumeInfo.optString("tittle");
+                String bookInfoLink = currentVolumeInfo.optString("infoLink");
+                String bookPublishedDate = currentVolumeInfo.optString("publishedDate");
+                String bookRating = currentVolumeInfo.optString("averageRating");
 
+                //Initialize all of below as null in case the Book doesn't contain any of those in the JSON response.
+                String bookAmount = null;
+                String bookCurrency = null;
+                String bookImage = null;
+                ArrayList<String> bookAuthors = new ArrayList<>();
 
-                if(currentAuthorArray!=null){
-
+                //Check if ImageLink Object was available, some books may not have images.
+                if (currentImageLinks != null) {
+                    bookImage = currentImageLinks.optString("thumbnail");
                 }
 
+                //Check if the book is for sale, if it is retrieve amount (price) and currency code, else leave those as null.
+                String saleability = currentSaleInfo.getString("saleability");
+                if (saleability.equals(FOR_SALE)) {
+                    JSONObject currentListPrice = currentSaleInfo.getJSONObject("listPrice");
+                    bookAmount = currentListPrice.getString("amount");
+                    bookCurrency = currentListPrice.getString("currencyCode");
+                }
+
+                //Check if Author Array is available, some books may not list the authors.
+                if (currentAuthorArray != null) {
+                    String currentAuthor;
+                    for (int y = 0; y < currentAuthorArray.length(); y++) {
+                        currentAuthor = currentAuthorArray.optString(y);
+                        bookAuthors.add(currentAuthor);
+                    }
+                }
+
+
+                Book book = new Book(bookTittle, bookAuthors, bookInfoLink, bookImage, bookAmount, bookCurrency, bookRating);
+                books.add(book);
             }
 
-
-
-
-        } catch(JSONException e){
+        } catch (JSONException e) {
             Log.e(LOG_TAG, "Error parsing Json results in extractBooks()", e);
         }
 
-
-         //Return the list of earthquakes
+        //Return the list of earthquakes
         return books;
     }
 

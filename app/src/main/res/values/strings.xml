@@ -2,4 +2,6 @@
     <string name="app_name">Book Listing</string>
     <string name="no_inet">Check your internet connection.</string>
     <string name="empty_state">No books found for that search.</string>
+    <string name="bad_response">Some data failed to load, try again.</string>
+    <string name="image_view_content_description">Book Cover.</string>
 </resources>

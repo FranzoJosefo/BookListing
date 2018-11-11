@@ -5,6 +5,8 @@ package com.franciscoolivero.android.booklisting;
  * This is my code for Udacity.
  */
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 
 /**
@@ -22,41 +24,62 @@ public class Book {
      */
     private ArrayList<String> mAuthors;
     /**
-     * Description of the book
+     * Google Books Info Website for this book
      */
-    private String mDescription;
-    /**
-     * Google Books Website for this book
-     */
-    private String mWeb;
+    private String mInfoLink;
     /**
      * Image String containing the URI to fetch the cover large thumbnail for the book;
+     * This string may return null
      */
     private String mImage;
+//    /**
+//     * Year in which the book was published
+//     */
+//    private String mPublishedDate;
+
     /**
-     * Year in which the book was published
+     * listPrice of the book.
+     * Some books may not be saleable, if so, this is kept null.
      */
-    private String mYear;
+    private String mListPrice;
+
+    /**
+     * Currency Code in which the Book price is displayed.
+     */
+    private String mCurrencyCode;
+
+    /**
+     * Rating of the Book. This may return null.
+     */
+
+    private String mRating;
+
 
     /**
      * Constructs a new {@link Book} object.
-     *
      * @param mTittle      is the tittle of the Book.
      * @param mAuthors      is the author of the Book.
-     * @param mWeb         is the Google Books website of the Book.
+     * @param mInfoLink         is the Google Books website of the Book.
      * @param mImage       is the Image URI associated with the Book, stored in a String.
-     * @param mDescription is the Description of the Book.
-     * @param mYear        is the year in which the Book was published.
+//     * @param mPublishedDate        is the date in which the Book was published.
+     * @param mListPrice  is the List Price of the book.
+     * @param mCurrencyCode is the currency code for the book sale.
+     * @param mRating is the average rating of the book.
+     *
      */
 
-    public Book(String mTittle, ArrayList<String> mAuthors, String mDescription, String mWeb, String mImage, String mYear) {
+    //Published Date removed, add if needed.
+    public Book(String mTittle, @Nullable ArrayList<String> mAuthors, String mInfoLink, @Nullable String mImage, @Nullable String mListPrice, @Nullable String mCurrencyCode, @Nullable String mRating) {
         this.mTittle = mTittle;
         this.mAuthors = mAuthors;
-        this.mDescription = mDescription;
-        this.mWeb = mWeb;
+        this.mInfoLink = mInfoLink;
         this.mImage = mImage;
-        this.mYear = mYear;
+//        this.mPublishedDate = mPublishedDate;
+        this.mListPrice = mListPrice;
+        this.mCurrencyCode = mCurrencyCode;
+        this.mRating = mRating;
     }
+
 
     /**
      * @return the Tittle of the Book.
@@ -73,26 +96,19 @@ public class Book {
     }
 
     /**
-     * @return the Description of the Book.
-     */
-    public String getmDescription() {
-        return mDescription;
-    }
-
-    /**
      * @return the Google Books Website of the Book.
      */
 
-    public String getmWeb() {
-        return mWeb;
+    public String getmInfoLink() {
+        return mInfoLink;
     }
 
-    /**
-     * @return the year in which the Book was published.
-     */
-    public String getmYear() {
-        return mYear;
-    }
+//    /**
+//     * @return the year in which the Book was published.
+//     */
+//    public String getmPublishedDate() {
+//        return mPublishedDate;
+//    }
 
     /**
      * @return the Image String containing the URL of the Book.
@@ -101,8 +117,41 @@ public class Book {
         return mImage;
     }
 
+    /**
+     * @return the ListPrice of the book.
+     */
+    public String getmListPrice() {
+        return mListPrice;
+    }
+
+    /**
+     * @return the Currency Code for the published book.
+     */
+    public String getmCurrencyCode() {
+        return mCurrencyCode;
+    }
+
+    /**
+     * @return the average rating of the book.
+     */
+    public String getmRating() {
+        return mRating;
+    }
+
     public boolean hasAuthor(){
         return mAuthors != null;
+    }
+
+    public boolean isSaleable(){
+        return mListPrice != null;
+    }
+
+    public boolean hasImage(){
+        return mImage != null;
+    }
+
+    public boolean hasRating(){
+        return mRating != null;
     }
 
 }
