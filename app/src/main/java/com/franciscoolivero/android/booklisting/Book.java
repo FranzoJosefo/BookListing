@@ -17,7 +17,7 @@ public class Book {
     /**
      * Tittle of the book
      */
-    private String mTittle;
+    private String mTitle;
     /**
      * List of the Authors of the book
      * Initialize as null in case the book has no Author (JSON may not return this variable).
@@ -57,7 +57,7 @@ public class Book {
 
     /**
      * Constructs a new {@link Book} object.
-     * @param mTittle      is the tittle of the Book.
+     * @param mTitle      is the tittle of the Book.
      * @param mAuthors      is the author of the Book.
      * @param mInfoLink         is the Google Books website of the Book.
      * @param mImage       is the Image URI associated with the Book, stored in a String.
@@ -69,8 +69,8 @@ public class Book {
      */
 
     //Published Date removed, add if needed.
-    public Book(String mTittle, @Nullable ArrayList<String> mAuthors, String mInfoLink, @Nullable String mImage, @Nullable String mListPrice, @Nullable String mCurrencyCode, @Nullable String mRating) {
-        this.mTittle = mTittle;
+    public Book(String mTitle, @Nullable ArrayList<String> mAuthors, String mInfoLink, @Nullable String mImage, @Nullable String mListPrice, @Nullable String mCurrencyCode, @Nullable String mRating) {
+        this.mTitle = mTitle;
         this.mAuthors = mAuthors;
         this.mInfoLink = mInfoLink;
         this.mImage = mImage;
@@ -84,8 +84,8 @@ public class Book {
     /**
      * @return the Tittle of the Book.
      */
-    public String getmTittle() {
-        return mTittle;
+    public String getmTitle() {
+        return mTitle;
     }
 
     /**
@@ -151,7 +151,7 @@ public class Book {
     }
 
     public boolean hasRating(){
-        return mRating != null;
+        return mRating != "";
     }
 
 }

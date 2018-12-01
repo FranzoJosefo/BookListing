@@ -15,13 +15,13 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class BookListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
     public static final String LOG_TAG = BookListActivity.class.getName();
@@ -32,6 +32,10 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     TextView emptyStateView;
     @BindView(R.id.loading_spinner)
     View loadingSpinner;
+    @BindView(R.id.toolbar)
+    android.support.v7.widget.Toolbar toolbar;
+    @BindView(R.id.text_home_default)
+    TextView homeDefaultMessage;
 
     /**
      * Create a new {@link android.widget.ArrayAdapter} of books.
@@ -43,19 +47,19 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
      * This really only comes into play if you're using multiple loaders.
      */
     private static final int BOOK_LOADER_ID = 1;
-    private static String GOOGLE_BOOKS_QUERY_URL = "https://www.googleapis.com/books/v1/volumes?q=";
+    private static final String GOOGLE_BOOKS_BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=";
+    private String userQuery;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
 
-        // Create a new adapter that takes an empty list of earthquakes as input
 
-        bookAdapter = new BookAdapter(this, new ArrayList<Book>());
 
-        isConnected();
     }
 
     private boolean isConnected() {
@@ -69,30 +73,35 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Create a new adapter that takes an empty list of earthquakes as input
+        bookAdapter = new BookAdapter(this, new ArrayList<Book>());
+        bookListView.setEmptyView(emptyStateView);
+        //THE CODE BELOW WAS ON ONCREATE
         // Inflate the options menu from XML
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_toolbar, menu);
 
         // Get the SearchView
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String s) {
+//                bookAdapter.clear();
+//                bookAdapter.notifyDataSetChanged();
 
-                if (isConnected()) {
+                homeDefaultMessage.setVisibility(View.GONE);
+                loadingSpinner.setVisibility(View.VISIBLE);
+                if (!isConnected()) {
                     loadingSpinner.setVisibility(View.GONE);
-                    bookListView.setEmptyView(emptyStateView);
                     emptyStateView.setText(R.string.no_inet);
 
                 } else {
                     // Set the adapter on the {@link ListView}
                     // so the list can be populated in the user interface
                     bookListView.setAdapter(bookAdapter);
-
-                    //Set the Empty View to the ListView.
-                    bookListView.setEmptyView(emptyStateView);
 
                     bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -101,12 +110,11 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
                             openWebPage(currentBook);
                         }
                     });
+                    userQuery = GOOGLE_BOOKS_BASE_URL + s + "&maxResults=40";
+                    startLoader();
 
                 }
-                GOOGLE_BOOKS_QUERY_URL = GOOGLE_BOOKS_QUERY_URL + "s";
-                startLoader();
                 return true;
-                //TODO REPAIR THIS CRAP
             }
 
             @Override
@@ -134,7 +142,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG, "No Loader was previously created, creating new EarthquakeLoader.");
-        return new BookLoader(this, GOOGLE_BOOKS_QUERY_URL);
+        return new BookLoader(this, userQuery);
 
     }
 
@@ -143,6 +151,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         loadingSpinner.setVisibility(View.GONE);
         // Clear the adapter of previous earthquake data
         bookAdapter.clear();
+        bookAdapter.notifyDataSetChanged();
 
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
@@ -163,7 +172,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     public void onLoaderReset(Loader<List<Book>> loader) {
         // Loader reset, so we can clear out our existing data.
         Log.i(LOG_TAG, "Loader reset, clear the data from adapter");
-
+        loader.reset();
         bookAdapter.clear();
     }
 
@@ -175,3 +184,13 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         }
     }
 }
+//    @Override
+//    public boolean onQueryTextSubmit(String s) {
+//
+//
+//    }
+//
+//    @Override
+//    public boolean onQueryTextChange(String s) {
+//        return false;
+//    }

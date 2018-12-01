@@ -28,19 +28,23 @@
             android:id="@+id/text_tittle"
             style="@style/text_tittle"
             tools:text="El tunnel"
-            android:maxLines="1"
+            android:maxLines="2"
             android:includeFontPadding="false"
-            android:lineHeight="50.4sp"/>
+            android:scrollHorizontally="true"
+            android:ellipsize="end" />
 
 
         <TextView
             android:id="@+id/text_author"
             style="@style/text_author"
-            android:maxLines="1"
+            android:maxLines="2"
             android:fontFamily="sans-serif"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             tools:text="Ernesto Sabato"
-            android:includeFontPadding="false"/>
+            android:includeFontPadding="false"
+            android:scrollHorizontally="true"
+            android:ellipsize="end" />
+
 
 
     </LinearLayout>
@@ -88,8 +92,8 @@
             android:id="@+id/image_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/round_star_rate_black_18"
-            android:scaleType="fitCenter" />
+            tools:src="@drawable/round_star_rate_black_18"
+            android:scaleType="fitCenter"/>
 
     </LinearLayout>
 

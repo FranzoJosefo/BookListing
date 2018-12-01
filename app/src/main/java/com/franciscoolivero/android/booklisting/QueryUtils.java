@@ -166,7 +166,7 @@ public final class QueryUtils {
                 JSONObject currentImageLinks = currentVolumeInfo.optJSONObject("imageLinks");
                 JSONObject currentSaleInfo = currentItem.getJSONObject("saleInfo");
 
-                String bookTittle = currentVolumeInfo.optString("tittle");
+                String bookTitle = currentVolumeInfo.optString("title");
                 String bookInfoLink = currentVolumeInfo.optString("infoLink");
                 String bookPublishedDate = currentVolumeInfo.optString("publishedDate");
                 String bookRating = currentVolumeInfo.optString("averageRating");
@@ -200,7 +200,7 @@ public final class QueryUtils {
                 }
 
 
-                Book book = new Book(bookTittle, bookAuthors, bookInfoLink, bookImage, bookAmount, bookCurrency, bookRating);
+                Book book = new Book(bookTitle, bookAuthors, bookInfoLink, bookImage, bookAmount, bookCurrency, bookRating);
                 books.add(book);
             }
 

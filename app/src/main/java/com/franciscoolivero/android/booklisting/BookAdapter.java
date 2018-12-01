@@ -34,7 +34,7 @@ public class BookAdapter extends ArrayAdapter<Book> {
         final Book currentBook = getItem(position);
         ViewHolder holder = new ViewHolder(listItemView);
 
-        holder.tittle.setText(currentBook.getmTittle());
+        holder.tittle.setText(currentBook.getmTitle());
 
         if (currentBook.hasAuthor()) {
             holder.author.setVisibility(View.VISIBLE);
@@ -64,6 +64,7 @@ public class BookAdapter extends ArrayAdapter<Book> {
         if(currentBook.hasRating()){
             holder.rating.setVisibility(View.VISIBLE);
             holder.starRatingImage.setVisibility(View.VISIBLE);
+            holder.starRatingImage.setImageDrawable(getContext().getResources().getDrawable(R.drawable.round_star_rate_black_18));
             holder.rating.setText(currentBook.getmRating());
         } else {
             holder.rating.setVisibility(View.GONE);
