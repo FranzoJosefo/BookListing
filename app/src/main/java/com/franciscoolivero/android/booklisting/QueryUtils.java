@@ -26,6 +26,7 @@ public final class QueryUtils {
 
     private static final String LOG_TAG = QueryUtils.class.getName();
     private static final String FOR_SALE = "FOR_SALE";
+    public static boolean badResponse = false;
 
     /**
      * Create a private constructor because no one should ever create a {@link QueryUtils} object.
@@ -34,7 +35,6 @@ public final class QueryUtils {
      */
     private QueryUtils() {
     }
-
 
     /**
      * Query the Google Books API and return an {@link List<Book>} object to represent a list of Books.
@@ -102,7 +102,7 @@ public final class QueryUtils {
                 jsonResponse = readFromStream(inputStream);
             } else {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
-                BookListActivity.badResponse = true;
+                badResponse = true;
                 // I'm thinking I could somehow handle a bad response code such as 404 or 500 but not sure how to do it. HELP!
             }
 
@@ -142,6 +142,7 @@ public final class QueryUtils {
      * parsing a JSON response.
      */
     private static List<Book> extractBooks(String jsonResponse) {
+        List<Book> books = new ArrayList<Book>();
 
         //If the JSON string is empty or null, then return early.
         if (TextUtils.isEmpty(jsonResponse)) {
@@ -149,7 +150,7 @@ public final class QueryUtils {
         }
 
         // Create an empty ArrayList that we can start adding earthquakes to
-        List<Book> books = new ArrayList<>();
+//        List<Book> books = new ArrayList<>();
 
 //         Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
 //         is formatted, a JSONException exception object will be thrown.

@@ -3,7 +3,6 @@ package com.franciscoolivero.android.booklisting;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -23,9 +22,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 public class BookListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
     public static final String LOG_TAG = BookListActivity.class.getName();
-    public static boolean badResponse = false;
     @BindView(R.id.list)
     ListView bookListView;
     @BindView(R.id.text_empty_state)
@@ -57,9 +56,6 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_book_list);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
-
-
     }
 
     private boolean isConnected() {
@@ -73,29 +69,30 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Create a new adapter that takes an empty list of earthquakes as input
-        bookAdapter = new BookAdapter(this, new ArrayList<Book>());
-        bookListView.setEmptyView(emptyStateView);
         //THE CODE BELOW WAS ON ONCREATE
         // Inflate the options menu from XML
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_toolbar, menu);
 
         // Get the SearchView
-        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) menu.findItem(R.id.action_search).getActionView();
+        final android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String s) {
-//                bookAdapter.clear();
-//                bookAdapter.notifyDataSetChanged();
+                searchView.clearFocus();
+                // Create a new adapter that takes an empty list of earthquakes as input
+                bookAdapter = new BookAdapter(getApplicationContext(), new ArrayList<Book>());
+                //bookAdapter.notifyDataSetChanged();
+
 
                 homeDefaultMessage.setVisibility(View.GONE);
                 loadingSpinner.setVisibility(View.VISIBLE);
                 if (!isConnected()) {
                     loadingSpinner.setVisibility(View.GONE);
+                    bookListView.setEmptyView(emptyStateView);
                     emptyStateView.setText(R.string.no_inet);
 
                 } else {
@@ -110,7 +107,10 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
                             openWebPage(currentBook);
                         }
                     });
+                    s = s.replaceAll(" ", "%20");
                     userQuery = GOOGLE_BOOKS_BASE_URL + s + "&maxResults=40";
+                    // Get a reference to the LoaderManager, in order to interact with loaders.
+
                     startLoader();
 
                 }
@@ -127,49 +127,24 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void startLoader() {
-        // Get a reference to the LoaderManager, in order to interact with loaders.
         LoaderManager loaderManager = getLoaderManager();
 
         // Initialize the loader. Pass in the int ID constant defined above and pass in null for
         // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
         // because this activity implements the LoaderCallbacks interface).
         Log.i(LOG_TAG, "Loader will be initialized. If it doesn't exist, create loader, if else reuse.");
-        loaderManager.initLoader(BOOK_LOADER_ID, null, this);
+        if(loaderManager==null){
+            loaderManager.initLoader(BOOK_LOADER_ID, null, this).forceLoad();
+        } else {
+            loaderManager.restartLoader(BOOK_LOADER_ID,null,this);
+        }
+
         Log.i(LOG_TAG, "Loader Initialized.");
     }
 
 
     @Override
-    public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        Log.i(LOG_TAG, "No Loader was previously created, creating new EarthquakeLoader.");
-        return new BookLoader(this, userQuery);
-
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
-        loadingSpinner.setVisibility(View.GONE);
-        // Clear the adapter of previous earthquake data
-        bookAdapter.clear();
-        bookAdapter.notifyDataSetChanged();
-
-        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
-        // data set. This will trigger the ListView to update.
-        Log.i(LOG_TAG, "Loading finished, add all Earthquakes to adapter so they can be displayed");
-
-        if (books != null && !books.isEmpty()) {
-            bookAdapter.addAll(books);
-        }
-
-        if (badResponse) {
-            emptyStateView.setText(R.string.bad_response);
-        } else {
-            emptyStateView.setText(R.string.empty_state);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Book>> loader) {
+    public void onLoaderReset(android.content.Loader<List<Book>> loader) {
         // Loader reset, so we can clear out our existing data.
         Log.i(LOG_TAG, "Loader reset, clear the data from adapter");
         loader.reset();
@@ -183,7 +158,41 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
             startActivity(intent);
         }
     }
+
+    @Override
+    public android.content.Loader<List<Book>> onCreateLoader(int i, Bundle bundle) {
+        Log.i(LOG_TAG, "No Loader was previously created, creating new EarthquakeLoader.");
+        return new BookLoader(this, userQuery);
+    }
+
+    @Override
+    public void onLoadFinished(android.content.Loader<List<Book>> loader, List<Book> books) {
+        loadingSpinner.setVisibility(View.GONE);
+        bookListView.setEmptyView(emptyStateView);
+        // Clear the adapter of previous earthquake data
+        bookAdapter.clear();
+
+        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // data set. This will trigger the ListView to update.
+        Log.i(LOG_TAG, "Loading finished, add all Earthquakes to adapter so they can be displayed");
+
+        if (books != null && !books.isEmpty()) {
+            bookAdapter.addAll(books);
+            bookAdapter.notifyDataSetChanged();
+        }
+
+        if (QueryUtils.badResponse) {
+            emptyStateView.setText(R.string.bad_response);
+            //Set badResponse to false again, to avoid constantly entering into this If statement after the user received a bad response.
+            QueryUtils.badResponse = false;
+        } else {
+            emptyStateView.setText(R.string.empty_state);
+        }
+    }
+
 }
+
+
 //    @Override
 //    public boolean onQueryTextSubmit(String s) {
 //
