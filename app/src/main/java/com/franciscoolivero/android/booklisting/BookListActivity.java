@@ -44,7 +44,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     LoaderManager loaderManager;
 
     /**
-     * Constant value for the earthquake loader ID. We can choose any integer.
+     * Constant value for the book loader ID. We can choose any integer.
      * This really only comes into play if you're using multiple loaders.
      */
     private static final int BOOK_LOADER_ID = 1;
@@ -113,7 +113,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
             @Override
             public boolean onQueryTextSubmit(String s) {
                 searchView.clearFocus();
-                // Create a new adapter that takes an empty list of earthquakes as input
+                // Create a new adapter that takes an empty list of Books as input
                 bookAdapter = new BookAdapter(getApplicationContext(), new ArrayList<Book>());
 
                 homeDefaultMessage.setVisibility(View.GONE);
@@ -187,7 +187,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public android.content.Loader<List<Book>> onCreateLoader(int i, Bundle bundle) {
-        Log.i(LOG_TAG, "No Loader was previously created OR loader was restarted, creating new EarthquakeLoader.");
+        Log.i(LOG_TAG, "No Loader was previously created OR loader was restarted, creating new BookLoader.");
         return new BookLoader(this, userQuery);
     }
 
@@ -197,12 +197,12 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
         bookListView.setEmptyView(emptyStateView);
         savedBooks = new ArrayList<>(books);
         savedBooks.addAll(books);
-        // Clear the adapter of previous earthquake data
+        // Clear the adapter of previous book data
         bookAdapter.clear();
 
-        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // If there is a valid list of {@link Book}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
-        Log.i(LOG_TAG, "Loading finished, add all Earthquakes to adapter so they can be displayed");
+        Log.i(LOG_TAG, "Loading finished, add all Books to adapter so they can be displayed");
 
         if (books != null && !books.isEmpty()) {
             bookAdapter.addAll(books);

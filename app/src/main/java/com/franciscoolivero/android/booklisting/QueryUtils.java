@@ -107,7 +107,7 @@ public final class QueryUtils {
             }
 
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results", e);
+            Log.e(LOG_TAG, "Problem retrieving the book JSON results", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -149,7 +149,7 @@ public final class QueryUtils {
             return null;
         }
 
-        // Create an empty ArrayList that we can start adding earthquakes to
+        // Create an empty ArrayList that we can start adding books to
 //        List<Book> books = new ArrayList<>();
 
 //         Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
@@ -209,7 +209,7 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "Error parsing Json results in extractBooks()", e);
         }
 
-        //Return the list of earthquakes
+        //Return the list of books
         return books;
     }
 
