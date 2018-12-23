@@ -40,6 +40,8 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
      * Create a new {@link android.widget.ArrayAdapter} of books.
      */
     private BookAdapter bookAdapter;
+    private ArrayList<Book> savedBooks;
+    LoaderManager loaderManager;
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -53,9 +55,38 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_book_list);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        // Get a reference to the LoaderManager, in order to interact with loaders.
+        loaderManager = getLoaderManager();
+
+
+        if (savedInstanceState != null && savedInstanceState.<Book>getParcelableArrayList("myKey") != null) {
+            homeDefaultMessage.setVisibility(View.GONE);
+            bookAdapter = new BookAdapter(getApplicationContext(), new ArrayList<Book>());
+            savedBooks = savedInstanceState.getParcelableArrayList("myKey");
+            bookAdapter.addAll(savedBooks);
+            bookAdapter.notifyDataSetChanged();
+            bookListView.setAdapter(bookAdapter);
+
+            bookListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Book currentBook = bookAdapter.getItem(position);
+                    openWebPage(currentBook);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedState) {
+        super.onSaveInstanceState(savedState);
+        if (savedBooks != null) {
+            savedState.putParcelableArrayList("myKey", savedBooks);
+        }
     }
 
     private boolean isConnected() {
@@ -69,7 +100,6 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //THE CODE BELOW WAS ON ONCREATE
         // Inflate the options menu from XML
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_toolbar, menu);
@@ -85,8 +115,6 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
                 searchView.clearFocus();
                 // Create a new adapter that takes an empty list of earthquakes as input
                 bookAdapter = new BookAdapter(getApplicationContext(), new ArrayList<Book>());
-                //bookAdapter.notifyDataSetChanged();
-
 
                 homeDefaultMessage.setVisibility(View.GONE);
                 loadingSpinner.setVisibility(View.VISIBLE);
@@ -109,7 +137,6 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
                     });
                     s = s.replaceAll(" ", "%20");
                     userQuery = GOOGLE_BOOKS_BASE_URL + s + "&maxResults=40";
-                    // Get a reference to the LoaderManager, in order to interact with loaders.
 
                     startLoader();
 
@@ -127,16 +154,15 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void startLoader() {
-        LoaderManager loaderManager = getLoaderManager();
 
         // Initialize the loader. Pass in the int ID constant defined above and pass in null for
         // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
         // because this activity implements the LoaderCallbacks interface).
         Log.i(LOG_TAG, "Loader will be initialized. If it doesn't exist, create loader, if else reuse.");
-        if(loaderManager==null){
+        if (loaderManager == null) {
             loaderManager.initLoader(BOOK_LOADER_ID, null, this).forceLoad();
         } else {
-            loaderManager.restartLoader(BOOK_LOADER_ID,null,this);
+            loaderManager.restartLoader(BOOK_LOADER_ID, null, this);
         }
 
         Log.i(LOG_TAG, "Loader Initialized.");
@@ -161,7 +187,7 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public android.content.Loader<List<Book>> onCreateLoader(int i, Bundle bundle) {
-        Log.i(LOG_TAG, "No Loader was previously created, creating new EarthquakeLoader.");
+        Log.i(LOG_TAG, "No Loader was previously created OR loader was restarted, creating new EarthquakeLoader.");
         return new BookLoader(this, userQuery);
     }
 
@@ -169,6 +195,8 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(android.content.Loader<List<Book>> loader, List<Book> books) {
         loadingSpinner.setVisibility(View.GONE);
         bookListView.setEmptyView(emptyStateView);
+        savedBooks = new ArrayList<>(books);
+        savedBooks.addAll(books);
         // Clear the adapter of previous earthquake data
         bookAdapter.clear();
 
@@ -192,14 +220,3 @@ public class BookListActivity extends AppCompatActivity implements LoaderManager
 
 }
 
-
-//    @Override
-//    public boolean onQueryTextSubmit(String s) {
-//
-//
-//    }
-//
-//    @Override
-//    public boolean onQueryTextChange(String s) {
-//        return false;
-//    }

@@ -5,6 +5,8 @@ package com.franciscoolivero.android.booklisting;
  * This is my code for Udacity.
  */
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
  * An {@link Book} object contains information related to a single Book fetched from the Google Book API
  */
 
-public class Book {
+public class Book implements Parcelable {
     /**
      * Tittle of the book
      */
@@ -32,11 +34,6 @@ public class Book {
      * This string may return null
      */
     private String mImage;
-//    /**
-//     * Year in which the book was published
-//     */
-//    private String mPublishedDate;
-
     /**
      * listPrice of the book.
      * Some books may not be saleable, if so, this is kept null.
@@ -61,7 +58,6 @@ public class Book {
      * @param mAuthors      is the author of the Book.
      * @param mInfoLink         is the Google Books website of the Book.
      * @param mImage       is the Image URI associated with the Book, stored in a String.
-//     * @param mPublishedDate        is the date in which the Book was published.
      * @param mListPrice  is the List Price of the book.
      * @param mCurrencyCode is the currency code for the book sale.
      * @param mRating is the average rating of the book.
@@ -74,7 +70,6 @@ public class Book {
         this.mAuthors = mAuthors;
         this.mInfoLink = mInfoLink;
         this.mImage = mImage;
-//        this.mPublishedDate = mPublishedDate;
         this.mListPrice = mListPrice;
         this.mCurrencyCode = mCurrencyCode;
         this.mRating = mRating;
@@ -151,7 +146,45 @@ public class Book {
     }
 
     public boolean hasRating(){
-        return mRating != "";
+        return !mRating.equals("");
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mTitle);
+        dest.writeStringList(this.mAuthors);
+        dest.writeString(this.mInfoLink);
+        dest.writeString(this.mImage);
+        dest.writeString(this.mListPrice);
+        dest.writeString(this.mCurrencyCode);
+        dest.writeString(this.mRating);
+    }
+
+    protected Book(Parcel in) {
+        this.mTitle = in.readString();
+        this.mAuthors = in.createStringArrayList();
+        this.mInfoLink = in.readString();
+        this.mImage = in.readString();
+        this.mListPrice = in.readString();
+        this.mCurrencyCode = in.readString();
+        this.mRating = in.readString();
+    }
+
+    public static final Parcelable.Creator<Book> CREATOR = new Parcelable.Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel source) {
+            return new Book(source);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
 }
