@@ -164,24 +164,17 @@ public final class QueryUtils {
                 JSONObject currentItem = jsonArrayItems.getJSONObject(i);
                 JSONObject currentVolumeInfo = currentItem.getJSONObject("volumeInfo");
                 JSONArray currentAuthorArray = currentVolumeInfo.optJSONArray("authors");
-                JSONObject currentImageLinks = currentVolumeInfo.optJSONObject("imageLinks");
                 JSONObject currentSaleInfo = currentItem.getJSONObject("saleInfo");
 
                 String bookTitle = currentVolumeInfo.optString("title");
                 String bookInfoLink = currentVolumeInfo.optString("infoLink");
-                String bookPublishedDate = currentVolumeInfo.optString("publishedDate");
                 String bookRating = currentVolumeInfo.optString("averageRating");
 
                 //Initialize all of below as null in case the Book doesn't contain any of those in the JSON response.
                 String bookAmount = null;
                 String bookCurrency = null;
-                String bookImage = null;
                 ArrayList<String> bookAuthors = new ArrayList<>();
 
-                //Check if ImageLink Object was available, some books may not have images.
-                if (currentImageLinks != null) {
-                    bookImage = currentImageLinks.optString("thumbnail");
-                }
 
                 //Check if the book is for sale, if it is retrieve amount (price) and currency code, else leave those as null.
                 String saleability = currentSaleInfo.getString("saleability");
@@ -201,7 +194,7 @@ public final class QueryUtils {
                 }
 
 
-                Book book = new Book(bookTitle, bookAuthors, bookInfoLink, bookImage, bookAmount, bookCurrency, bookRating);
+                Book book = new Book(bookTitle, bookAuthors, bookInfoLink, bookAmount, bookCurrency, bookRating);
                 books.add(book);
             }
 

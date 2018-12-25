@@ -11,8 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,11 +43,6 @@ public class BookAdapter extends ArrayAdapter<Book> {
             holder.author.setVisibility(View.GONE);
         }
 
-        if (currentBook.hasImage()) {
-            Picasso.with(getContext()).load(currentBook.getmImage()).into(holder.bookImage);
-        } else {
-            //TODO
-        }
 
         if (currentBook.isSaleable()) {
             holder.amount.setVisibility(View.VISIBLE);
@@ -61,7 +54,7 @@ public class BookAdapter extends ArrayAdapter<Book> {
             holder.currencyCode.setVisibility(View.GONE);
         }
 
-        if(currentBook.hasRating()){
+        if (currentBook.hasRating()) {
             holder.rating.setVisibility(View.VISIBLE);
             holder.starRatingImage.setVisibility(View.VISIBLE);
             holder.starRatingImage.setImageDrawable(getContext().getResources().getDrawable(R.drawable.round_star_rate_black_18));
@@ -71,13 +64,6 @@ public class BookAdapter extends ArrayAdapter<Book> {
             holder.starRatingImage.setVisibility(View.GONE);
         }
 
-
-//        holder.buttonBuy.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                openWebPage(currentBook);
-//            }
-//        });
         return listItemView;
     }
 
@@ -92,24 +78,13 @@ public class BookAdapter extends ArrayAdapter<Book> {
         TextView amount;
         @BindView(R.id.text_currency)
         TextView currencyCode;
-        @BindView(R.id.image_book)
-        ImageView bookImage;
         @BindView(R.id.image_star)
         ImageView starRatingImage;
 
-//        @BindView(R.id.button_buy)
-//        Button buttonBuy;
 
         private ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
     }
 
-//    private void openWebPage(Book book) {
-//        //Uri bookUri = Uri.parse(book.getmInfoLink()); Replace
-//        Intent intent = new Intent(Intent.ACTION_VIEW, bookUri);
-//        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-//            getContext().startActivity(intent);
-//        }
-//    }
 }

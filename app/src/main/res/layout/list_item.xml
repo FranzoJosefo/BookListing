@@ -2,50 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
     android:layout_height="124dp"
+    android:orientation="horizontal"
     android:padding="16dp"
 
     tools:background="@android:color/background_light">
 
-    <ImageView
-        android:id="@+id/image_book"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        tools:src="@drawable/el_tunel_sample"
-        android:contentDescription="@string/image_view_content_description"/>
-
     <LinearLayout
         android:id="@+id/linear_layout_container"
-        android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_toEndOf="@id/image_book">
+        android:layout_marginStart="8dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_tittle"
             style="@style/text_tittle"
-            tools:text="El tunnel"
-            android:maxLines="2"
+            android:ellipsize="end"
             android:includeFontPadding="false"
+            android:maxLines="2"
             android:scrollHorizontally="true"
-            android:ellipsize="end" />
-
+            tools:text="El tunnel" />
 
         <TextView
             android:id="@+id/text_author"
             style="@style/text_author"
-            android:maxLines="2"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-            tools:text="Ernesto Sabato"
             android:includeFontPadding="false"
+            android:maxLines="2"
             android:scrollHorizontally="true"
-            android:ellipsize="end" />
-
-
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            tools:text="Ernesto Sabato" />
 
     </LinearLayout>
 
@@ -53,70 +41,45 @@
         android:id="@+id/text_currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="ARS"
-        android:layout_toStartOf="@id/text_price_amount"
         android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@id/text_price_amount"
+        android:includeFontPadding="false"
         android:textColor="@android:color/holo_blue_dark"
-        android:includeFontPadding="false"/>
-
+        tools:text="ARS" />
 
     <TextView
         android:id="@+id/text_price_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_blue_dark"
-        android:layout_marginStart="4dp"
-        tools:text="386.77"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:includeFontPadding="false"/>
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="4dp"
+        android:includeFontPadding="false"
+        android:textColor="@android:color/holo_blue_dark"
+        tools:text="386.77" />
 
     <LinearLayout
-        android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_toEndOf="@id/image_book"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/text_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="4.7"
             android:fontFamily="sans-serif"
-            android:includeFontPadding="false" />
-
+            android:includeFontPadding="false"
+            tools:text="4.7" />
 
         <ImageView
             android:id="@+id/image_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:src="@drawable/round_star_rate_black_18"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            tools:src="@drawable/round_star_rate_black_18" />
 
     </LinearLayout>
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical">-->
-        <!---->
-        <!--<TextView-->
-            <!--android:id="@+id/text_published"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content" />-->
-        <!---->
-    <!--</LinearLayout>-->
-
-    <!--<Button-->
-        <!--android:id="@+id/button_buy"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="BUY BOOK"-->
-        <!--android:fontFamily="sans-serif"-->
-        <!--android:layout_alignParentEnd="true" />-->
-
-
 
 </RelativeLayout>

@@ -30,11 +30,6 @@ public class Book implements Parcelable {
      */
     private String mInfoLink;
     /**
-     * Image String containing the URI to fetch the cover large thumbnail for the book;
-     * This string may return null
-     */
-    private String mImage;
-    /**
      * listPrice of the book.
      * Some books may not be saleable, if so, this is kept null.
      */
@@ -57,7 +52,6 @@ public class Book implements Parcelable {
      * @param mTitle      is the tittle of the Book.
      * @param mAuthors      is the author of the Book.
      * @param mInfoLink         is the Google Books website of the Book.
-     * @param mImage       is the Image URI associated with the Book, stored in a String.
      * @param mListPrice  is the List Price of the book.
      * @param mCurrencyCode is the currency code for the book sale.
      * @param mRating is the average rating of the book.
@@ -65,11 +59,10 @@ public class Book implements Parcelable {
      */
 
     //Published Date removed, add if needed.
-    public Book(String mTitle, @Nullable ArrayList<String> mAuthors, String mInfoLink, @Nullable String mImage, @Nullable String mListPrice, @Nullable String mCurrencyCode, @Nullable String mRating) {
+    public Book(String mTitle, @Nullable ArrayList<String> mAuthors, String mInfoLink, @Nullable String mListPrice, @Nullable String mCurrencyCode, @Nullable String mRating) {
         this.mTitle = mTitle;
         this.mAuthors = mAuthors;
         this.mInfoLink = mInfoLink;
-        this.mImage = mImage;
         this.mListPrice = mListPrice;
         this.mCurrencyCode = mCurrencyCode;
         this.mRating = mRating;
@@ -105,12 +98,6 @@ public class Book implements Parcelable {
 //        return mPublishedDate;
 //    }
 
-    /**
-     * @return the Image String containing the URL of the Book.
-     */
-    public String getmImage() {
-        return mImage;
-    }
 
     /**
      * @return the ListPrice of the book.
@@ -141,9 +128,6 @@ public class Book implements Parcelable {
         return mListPrice != null;
     }
 
-    public boolean hasImage(){
-        return mImage != null;
-    }
 
     public boolean hasRating(){
         return !mRating.equals("");
@@ -160,7 +144,6 @@ public class Book implements Parcelable {
         dest.writeString(this.mTitle);
         dest.writeStringList(this.mAuthors);
         dest.writeString(this.mInfoLink);
-        dest.writeString(this.mImage);
         dest.writeString(this.mListPrice);
         dest.writeString(this.mCurrencyCode);
         dest.writeString(this.mRating);
@@ -170,7 +153,6 @@ public class Book implements Parcelable {
         this.mTitle = in.readString();
         this.mAuthors = in.createStringArrayList();
         this.mInfoLink = in.readString();
-        this.mImage = in.readString();
         this.mListPrice = in.readString();
         this.mCurrencyCode = in.readString();
         this.mRating = in.readString();
